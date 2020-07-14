@@ -35,11 +35,11 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
-			<url>https://nexus.atosresearch.eu/repository/maven-releases/</url>
+			<url>${NEXUS_URL_RELEASES}</url>
 		</repository>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
-			<url>https://nexus.atosresearch.eu/repository/maven-snapshots/</url>
+			<url>${NEXUS_URL_SNAPSHOTS}</url>
 		</snapshotRepository>
 	</distributionManagement>
 

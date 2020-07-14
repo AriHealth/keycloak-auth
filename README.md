@@ -1,6 +1,8 @@
 # keycloak-auth
 
-[![Build Status](https://travis-ci.org/AriHealth/keycloak-auth.svg?branch=master)](https://travis-ci.org/AriHealth/keycloak-auth) [![codecov.io](https://codecov.io/gh/AriHealth/keycloak-auth/branch/master/graphs/badge.svg)](http://codecov.io/gh/AriHealth/keycloak-auth)
+[![Build Status](https://travis-ci.org/AriHealth/keycloak-auth.svg?branch=master)]
+(https://travis-ci.org/AriHealth/keycloak-auth) 
+[![codecov.io](https://codecov.io/gh/AriHealth/keycloak-auth/branch/master/graphs/badge.svg)](http://codecov.io/gh/AriHealth/keycloak-auth)
 [![Docker Build](https://img.shields.io/docker/cloud/build/arihealth/oauth-easy)](https://cloud.docker.com/u/arihealth/repository/docker/arihealth/oauth-easy)
 [![Docker Pulls](https://img.shields.io/docker/pulls/arihealth/oauth-easy)](https://cloud.docker.com/u/arihealth/repository/docker/arihealth/oauth-easy)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)

@@ -47,25 +47,4 @@ under the License.
 	</server>  
   </servers>
 
-  <mirrors>
-  </mirrors>
-  
-  <profiles>
-    <profile>
-        <id>sonar</id>
-        <activation>
-			<activeByDefault>true</activeByDefault>
-        </activation>
-        <properties>
-            <sonar.login>${env.SONAR_USERNAME}</sonar.login>
-            <sonar.password>${env.SONAR_PASSWORD}</sonar.password>
- 
-            <!-- Sonar CI server. -->
-            <sonar.host.url>
-                ${env.SONAR_URL}
-            </sonar.host.url>
-        </properties>
-    </profile>
-  </profiles>
-
 </settings>
