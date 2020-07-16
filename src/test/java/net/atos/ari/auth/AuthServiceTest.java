@@ -56,9 +56,8 @@ import net.atos.ari.auth.model.KeycloakUser;
 import net.atos.ari.auth.service.AuthService;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(properties = { "keycloak.url=http://localhost:8080/auth", 
-		"keycloak.realm=test", "keycloak.client_id=test"})
-@Profile("test") 
+@TestPropertySource(properties = { "keycloak.url=http://localhost:8080/auth", "keycloak.realm=test", "keycloak.client_id=test" })
+@Profile("test")
 public class AuthServiceTest {
 
     /**
@@ -66,80 +65,76 @@ public class AuthServiceTest {
      * 
      * @return the Auth Service
      */
-	@TestConfiguration
-	static class AuthServiceImplTestContextConfiguration {
-	  
-		@Bean
-		public AuthService authService() {
-			return new AuthService();
-		}
-	}
-	 
-	@Autowired
-	private AuthService authService;
-	
-	@Mock
-	private RestTemplate restTemplate;
-	
-	private String authToken = "123456789";
-	private static final String BEARER = "BEARER ";
-	
+    @TestConfiguration
+    static class AuthServiceImplTestContextConfiguration {
+
+        @Bean
+        public AuthService authService() {
+            return new AuthService();
+        }
+    }
+
+    @Autowired
+    private AuthService authService;
+
+    @Mock
+    private RestTemplate restTemplate;
+
+    private String authToken = "123456789";
+    private static final String BEARER = "BEARER ";
+
     /**
      * SetUp the system to mock the services.
      * 
      * @return void
      */
-	@Before
-	public void setUp() {
-		
-		AccessToken user = new AccessToken();
-		user.setAccessTokenHash(authToken);
-		user.setPreferredUsername("test");	
-			
-		// Mock OAuth REST call userinfo to provide status ok
-		when(restTemplate.exchange(
-				ArgumentMatchers.contains("userinfo"),
-				ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(),
-				ArgumentMatchers.<Class<AccessToken>>any()))
-			.thenReturn(new ResponseEntity<AccessToken>(user, HttpStatus.OK));
-		
-		AccessTokenResponse token = AccessTokenResponse.builder()
-				.access_token(authToken)
-				.expires_in(0L)
-				.jti("")
-				.refresh_token("")
-				.build();
-			
-		// Mock OAuth REST call token to provide status ok
-		when(restTemplate.exchange(
-				ArgumentMatchers.contains("token"),
-				ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(),
-				ArgumentMatchers.<Class<AccessTokenResponse>>any()))
-			.thenReturn(new ResponseEntity<AccessTokenResponse>(token, HttpStatus.OK));
+    @Before
+    public void setUp() {
 
-		authService.setRestTemplate(restTemplate);
-	}
-	
+        AccessToken user = new AccessToken();
+        user.setAccessTokenHash(authToken);
+        user.setPreferredUsername("test");
+
+        // Mock OAuth REST call userinfo to provide status ok
+        when(restTemplate.exchange(ArgumentMatchers.contains("userinfo"), 
+            ArgumentMatchers.any(HttpMethod.class), ArgumentMatchers.any(), 
+            ArgumentMatchers.<Class<AccessToken>> any()))
+        .thenReturn(new ResponseEntity<AccessToken>(user, HttpStatus.OK));
+
+        AccessTokenResponse token = AccessTokenResponse.builder()
+            .access_token(authToken)
+            .expires_in(0L)
+            .jti("")
+            .refresh_token("")
+            .build();
+
+        // Mock OAuth REST call token to provide status ok
+        when(restTemplate.exchange(ArgumentMatchers.contains("token"), 
+            ArgumentMatchers.any(HttpMethod.class), ArgumentMatchers.any(), 
+            ArgumentMatchers.<Class<AccessTokenResponse>> any()))
+        .thenReturn(new ResponseEntity<AccessTokenResponse>(token, HttpStatus.OK));
+
+        authService.setRestTemplate(restTemplate);
+    }
+
     /**
      * Test all the Service functionalities provided.
      * 
      * @return void
      * @throws NotAuthorizedException, when some not authorization raises 
      */
-	@Test
-	public void callService_returnExpectedBehaviourTest() throws NotAuthorizedException {
-		KeycloakUser user = KeycloakUser.builder()
-				.username("test")
-				.password("test")
-				.build();
-				
-	    AccessTokenResponse found = authService.login(user);
-	  
-		assertThat(found.getAccess_token(), Matchers.<String>is(authToken));
-	    
-	    authService.user(BEARER + authToken);
-	 }
+    @Test
+    public void callService_returnExpectedBehaviourTest() throws NotAuthorizedException {
+        KeycloakUser user = KeycloakUser.builder()
+            .username("test")
+            .password("test")
+            .build();
+
+        AccessTokenResponse found = authService.login(user);
+
+        assertThat(found.getAccess_token(), Matchers.<String> is(authToken));
+
+        authService.user(BEARER + authToken);
+    }
 
 }

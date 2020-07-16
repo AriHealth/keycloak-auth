@@ -47,78 +47,80 @@ import net.atos.ari.auth.model.KeycloakUser;
 @Component
 public class AuthService implements Service {
 
-	public static final Logger log = LoggerFactory.getLogger(AuthService.class);
+    public static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
-	//Constants
-	@Value("${keycloak.url}")
+    // Constants
+    @Value("${keycloak.url}")
     private String keycloakUrl;
-	
-	@Value("${keycloak.realm}")
+
+    @Value("${keycloak.realm}")
     private String keycloakRealm;
-	
-	@Value("${keycloak.client_id}")
+
+    @Value("${keycloak.client_id}")
     private String keycloakClientId;
-	
-	RestTemplate restTemplate = new RestTemplate();
-	private static final String BEARER = "BEARER ";
 
-	@Override
-	public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException {
-		try {
-			String uri = keycloakUrl + "/realms/" + keycloakRealm + 
-					"/protocol/openid-connect/token";
-			String data = "grant_type=password&username="+
-					user.getUsername()+"&password="+user.getPassword()+"&client_id="+
-					keycloakClientId;
-			
-			HttpHeaders headers = new HttpHeaders();
-			headers.set("Content-Type", "application/x-www-form-urlencoded");
+    RestTemplate restTemplate = new RestTemplate();
+    private static final String BEARER = "BEARER ";
 
-			HttpEntity<String> entity = new HttpEntity<String>(data, headers);
-			ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(uri, 
-					HttpMethod.POST, entity, AccessTokenResponse.class);			
-			
-	   		if (response.getStatusCode().value() != HttpStatus.SC_OK) {
-	    		log.error("Unauthorised access to protected resource", response.getStatusCode().value());
-	    		throw new NotAuthorizedException("Unauthorised access to protected resource");
-			}
-			return response.getBody();
-		} catch (Exception ex) {
-    		log.error("Unauthorised access to protected resource", ex);
-    		throw new NotAuthorizedException("Unauthorised access to protected resource");
-		} 
-	}
+    @Override
+    public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException {
+        try {
+            String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
+            String data = "grant_type=password&username=" + user.getUsername() + 
+                "&password=" + user.getPassword() + "&client_id=" + keycloakClientId;
 
-	@Override
-	public String user(String authToken) throws NotAuthorizedException {
-        
-        if (! authToken.toUpperCase().startsWith(BEARER)) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+            HttpEntity<String> entity = new HttpEntity<String>(data, headers);
+            ResponseEntity<AccessTokenResponse> response = 
+                restTemplate.exchange(uri, HttpMethod.POST, entity, AccessTokenResponse.class);
+
+            if (response.getStatusCode()
+                .value() != HttpStatus.SC_OK) {
+                log.error("Unauthorised access to protected resource", response.getStatusCode()
+                    .value());
+                throw new NotAuthorizedException("Unauthorised access to protected resource");
+            }
+            return response.getBody();
+        } catch (Exception ex) {
+            log.error("Unauthorised access to protected resource", ex);
+            throw new NotAuthorizedException("Unauthorised access to protected resource");
+        }
+    }
+
+    @Override
+    public String user(String authToken) throws NotAuthorizedException {
+
+        if (!authToken.toUpperCase()
+            .startsWith(BEARER)) {
             throw new NotAuthorizedException("Invalid OAuth Header. Missing Bearer prefix");
         }
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authToken);
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
-		
-		ResponseEntity<AccessToken> response = restTemplate.exchange(
-				keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/userinfo", 
-				HttpMethod.POST, 
-				entity, 
-				AccessToken.class);
 
-   		if (response.getStatusCode().value() != HttpStatus.SC_OK) {
-            log.error("OAuth2 Authentication failure. "
-            		+ "Invalid OAuth Token supplied in Authorization Header on Request. Code {}", response.getStatusCode().value());
-    		throw new NotAuthorizedException("OAuth2 Authentication failure. "
-    				+ "Invalid OAuth Token supplied in Authorization Header on Request.");
+        ResponseEntity<AccessToken> response = restTemplate.exchange(keycloakUrl + 
+            "/realms/" + keycloakRealm + "/protocol/openid-connect/userinfo", HttpMethod.POST, entity, AccessToken.class);
+
+        if (response.getStatusCode()
+            .value() != HttpStatus.SC_OK) {
+            log.error("OAuth2 Authentication failure. " + 
+                "Invalid OAuth Token supplied in Authorization Header on Request. Code {}", 
+                response.getStatusCode().value());
+            throw new NotAuthorizedException("OAuth2 Authentication failure. " + 
+                "Invalid OAuth Token supplied in Authorization Header on Request.");
         }
-   		
-		log.debug("User info: {}", response.getBody().getPreferredUsername());
-   		return response.getBody().getPreferredUsername();
-	}
-	
-	public void setRestTemplate(RestTemplate restTemplate) {
-		this.restTemplate = restTemplate;
-	}
+
+        log.debug("User info: {}", response.getBody()
+            .getPreferredUsername());
+        return response.getBody()
+            .getPreferredUsername();
+    }
+
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 }

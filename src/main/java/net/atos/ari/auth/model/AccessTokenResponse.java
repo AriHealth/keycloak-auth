@@ -35,10 +35,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccessTokenResponse {
-	private String access_token;
-	private String token_type;
-	private String refresh_token;
-	private Long expires_in;
-	private String scope;
-	private String jti;
+    private String access_token;
+    private String token_type;
+    private String refresh_token;
+    private Long expires_in;
+    private String scope;
+    private String jti;
 }

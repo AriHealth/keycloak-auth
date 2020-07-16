@@ -33,6 +33,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KeycloakUser {
-	private String username;
-	private String password;
+    private String username;
+    private String password;
 }

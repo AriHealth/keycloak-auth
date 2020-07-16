@@ -48,25 +48,23 @@ import net.atos.ari.auth.service.Service;
 @EnableAutoConfiguration
 public class AuthController {
 
-	private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-	@Autowired
+    @Autowired
     Service authService;
 
-	@ApiOperation(value = "Give OAuth access token given user and password")
-	@PostMapping("/login")
-	public AccessTokenResponse login(@RequestBody KeycloakUser user) 
-			throws NotAuthorizedException {
-		log.info("Login user");
-		return authService.login(user);
-	}
-	
-	@ApiOperation(value = "Provide the user preferred name given the token")
-	@GetMapping("/user")
-	public String user(@ApiParam(value="Bearer <token>") @RequestHeader(HttpHeaders.AUTHORIZATION) String token) 
-			throws NotAuthorizedException {
-		log.info("Get User info");
-		return authService.user(token);
-	}
+    @ApiOperation(value = "Give OAuth access token given user and password")
+    @PostMapping("/login")
+    public AccessTokenResponse login(@RequestBody KeycloakUser user) throws NotAuthorizedException {
+        log.info("Login user");
+        return authService.login(user);
+    }
+
+    @ApiOperation(value = "Provide the user preferred name given the token")
+    @GetMapping("/user")
+    public String user(@ApiParam(value = "Bearer <token>") @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
+        log.info("Get User info");
+        return authService.user(token);
+    }
 
 }

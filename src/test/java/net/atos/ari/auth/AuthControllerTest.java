@@ -56,31 +56,30 @@ import net.atos.ari.auth.service.AuthService;
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AuthControllerTest {
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-	@InjectMocks
-	private AuthController authController;
-	
-	@Mock
-	private AuthService authService;
+    @InjectMocks
+    private AuthController authController;
+
+    @Mock
+    private AuthService authService;
 
     /**
      * Init the Mockito annotations and MVC mock.
      * 
      * @return void
      */
-	@Before
-	public void init(){
-		MockitoAnnotations.initMocks(this);
-		mockMvc = MockMvcBuilders
-				.standaloneSetup(authController)
-				.build();
-	}
-	
-	private KeycloakUser user;
-	private String authToken = "123456789";
-	private ObjectWriter ow;
- 
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(authController)
+            .build();
+    }
+
+    private KeycloakUser user;
+    private String authToken = "123456789";
+    private ObjectWriter ow;
+
     /**
      * Mock the service calls for the different todos operations.
      * 
@@ -88,29 +87,28 @@ public class AuthControllerTest {
      * @throws NotAuthorizedException, when the user is not authorized to 
      *   use the API call 
      */
-	@Before
-	public void setUp() throws NotAuthorizedException {
-	    ObjectMapper mapper = new ObjectMapper();
-	    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-	    
-	    ow = mapper.writer().withDefaultPrettyPrinter();
+    @Before
+    public void setUp() throws NotAuthorizedException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 
-	    user = KeycloakUser.builder()
-	    		.username("test")
-	    		.password("test")
-	    		.build();
+        ow = mapper.writer()
+            .withDefaultPrettyPrinter();
 
-	    Mockito
-	    	.when(authService.user(""))
-	    	.thenReturn("OK");
-	    
-	    AccessTokenResponse token = new AccessTokenResponse();
-	    token.setAccess_token(authToken);
-	    
-	    Mockito
-	    	.when(authService.login(user))
-	    	.thenReturn(token);
-	}
+        user = KeycloakUser.builder()
+            .username("test")
+            .password("test")
+            .build();
+
+        Mockito.when(authService.user(""))
+            .thenReturn("OK");
+
+        AccessTokenResponse token = new AccessTokenResponse();
+        token.setAccess_token(authToken);
+
+        Mockito.when(authService.login(user))
+            .thenReturn(token);
+    }
 
     /**
      * Test get user info when no authorization bearer is provided.
@@ -118,28 +116,26 @@ public class AuthControllerTest {
      * @return void
      * @throws Exception, when some error happens 
      */
-	@Test
-	public void getUserInfoOAuthDisable_returnOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-        		.get("/user")
-        		.header("Authorization", "Bearer " + authToken)
-        		.contentType(MediaType.APPLICATION_JSON))
-          .andExpect(status().isOk());
-	}
-	
+    @Test
+    public void getUserInfoOAuthDisable_returnOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user")
+            .header("Authorization", "Bearer " + authToken)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
     /**
      * Test login when no authorization bearer is provided.
      * 
      * @return void
      * @throws Exception, when some error happens 
      */
-	@Test
-	public void login_returnOk() throws Exception {
+    @Test
+    public void login_returnOk() throws Exception {
         String requestAccessToken = ow.writeValueAsString(user);
-        mockMvc.perform(MockMvcRequestBuilders
-        		.post("/login")
-        		.contentType(MediaType.APPLICATION_JSON)
-        		.content(requestAccessToken.getBytes()))
-          .andExpect(status().isOk());
-	}
+        mockMvc.perform(MockMvcRequestBuilders.post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestAccessToken.getBytes()))
+            .andExpect(status().isOk());
+    }
 }

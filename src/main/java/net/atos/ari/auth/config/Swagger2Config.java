@@ -38,26 +38,24 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class Swagger2Config {
-	@Bean
-	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors
-						.basePackage("net.atos.ari.auth.controller"))
-				.paths(PathSelectors.regex("/.*"))
-				.build().apiInfo(apiEndPointsInfo());
-	}
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2).select()
+            .apis(RequestHandlerSelectors.basePackage("net.atos.ari.auth.controller"))
+            .paths(PathSelectors.regex("/.*"))
+            .build()
+            .apiInfo(apiEndPointsInfo());
+    }
 
-	private ApiInfo apiEndPointsInfo() {
+    private ApiInfo apiEndPointsInfo() {
 
-		return new ApiInfoBuilder().title("KeyCloak Auth Rest API")
-				.description("Rest API for ")
-				.contact(new Contact("Atos ARI Health", 
-						"http://booklet.atosresearch.eu/content/health-0", 
-						""))
-				.license("Apache 2.0")
-				.licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
-				.version("1.0.0")
-				.build();
-	}
-	
+        return new ApiInfoBuilder().title("KeyCloak Auth Rest API")
+            .description("Rest API for ")
+            .contact(new Contact("Atos ARI Health", "http://booklet.atosresearch.eu/content/health-0", ""))
+            .license("Apache 2.0")
+            .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
+            .version("1.0.0")
+            .build();
+    }
+
 }

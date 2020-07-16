@@ -33,7 +33,7 @@ import net.atos.ari.auth.model.KeycloakUser;
 
 @Component
 public interface Service {
-	public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException;
-	public String user(String token) throws NotAuthorizedException;
-}
+    public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException;
 
+    public String user(String token) throws NotAuthorizedException;
+}
