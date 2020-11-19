@@ -58,6 +58,10 @@ public class AuthService implements Service {
 
     @Value("${keycloak.client_id}")
     private String keycloakClientId;
+    
+    @Value("${keycloak.client_secret}")
+    private String client_secret;
+        
 
     RestTemplate restTemplate = new RestTemplate();
     private static final String BEARER = "BEARER ";
@@ -65,9 +69,11 @@ public class AuthService implements Service {
     @Override
     public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException {
         try {
-            String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
+            String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token/";
             String data = "grant_type=password&username=" + user.getUsername() + 
-                "&password=" + user.getPassword() + "&client_id=" + keycloakClientId;
+                "&password=" + user.getPassword() 
+                + "&client_id=" + keycloakClientId
+                + "&client_secret=" + client_secret;
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/x-www-form-urlencoded");
@@ -89,6 +95,40 @@ public class AuthService implements Service {
         }
     }
 
+   
+    @Override
+	public Boolean isValid(String authToken) throws NotAuthorizedException {
+    	String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token/introspect";
+    	 
+    	 String data = "&client_id=" + keycloakClientId
+                 + "&client_secret=" + client_secret
+                 + "&token_type_hint=access_token"
+    	 		 + "&token="+authToken;
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+		 HttpEntity<String> entity = new HttpEntity<String>(data, headers);
+		 log.debug("Token info: {}", entity);
+		 
+          ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(uri, HttpMethod.POST, 
+        		  entity, AccessTokenResponse.class);
+        
+         
+         if (response.getStatusCode()
+             .value() != HttpStatus.SC_OK) {
+             log.error("Unauthorised access to protected resource", response.getStatusCode()
+                 .value());
+             throw new NotAuthorizedException("Unauthorised access to protected resource");
+         }
+
+		log.debug("Token info: {}", response.getBody().isActive());
+		return response.getBody().isActive();
+		
+	}
+	
+   
+    
     @Override
     public String user(String authToken) throws NotAuthorizedException {
 

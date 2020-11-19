@@ -41,4 +41,5 @@ public class AccessTokenResponse {
     private Long expires_in;
     private String scope;
     private String jti;
+    private boolean active;
 }

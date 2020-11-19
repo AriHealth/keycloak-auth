@@ -36,4 +36,6 @@ public interface Service {
     public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException;
 
     public String user(String token) throws NotAuthorizedException;
+    
+    public Boolean isValid(String token) throws NotAuthorizedException;
 }

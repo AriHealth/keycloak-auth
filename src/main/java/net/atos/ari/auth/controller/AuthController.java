@@ -62,9 +62,26 @@ public class AuthController {
 
     @ApiOperation(value = "Provide the user preferred name given the token")
     @GetMapping("/user")
-    public String user(@ApiParam(value = "Bearer <token>") @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
+    public String user(@ApiParam(value = "Bearer <token>") 
+    	@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
         log.info("Get User info");
         return authService.user(token);
     }
 
+    
+    @ApiOperation(value = "Provide token info validation")
+    @PostMapping("/isvalid")
+    public boolean isValid(String token) 
+    		throws NotAuthorizedException {
+        log.info("Get isvalid token");
+        return authService.isValid(token);
+    }
+    /*
+    @ApiOperation(value = "Provide the user preferred name given the token")
+    @GetMapping("/isvalid")
+    public String isvalid(@ApiParam(value = "Bearer <token>") 
+    	@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
+        log.info("Get if is a valid token");
+        return authService.user(token);
+    }*/
 }
