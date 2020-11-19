@@ -118,8 +118,14 @@ public class AuthService implements Service {
              throw new NotAuthorizedException("Unauthorised access to protected resource");
          }
 
-		log.debug("Token info: {}", response.getBody());
-		return response.getBody().isActive();
+         if (response.getBody() != null) {
+        	 log.debug("Token info: {}", response.getBody());
+        	 return response.getBody().isActive();
+         }
+         else {
+         	new NotAuthorizedException("OAuth2 Authentication failure. ");
+         }
+         return false;
 	}
 	
    
@@ -149,10 +155,16 @@ public class AuthService implements Service {
                 "Invalid OAuth Token supplied in Authorization Header on Request.");
         }
 
-        log.debug("User info: {}", response.getBody()
-            .getPreferredUsername());
-        return response.getBody()
-            .getPreferredUsername();
+        if (response.getBody() != null) {
+        	log.debug("User info: {}", response.getBody()
+        			.getPreferredUsername());
+        	return response.getBody()
+        			.getPreferredUsername();
+        }
+        else {
+        	new NotAuthorizedException("OAuth2 Authentication failure. ");
+        }
+        return "";
     }
 
     public void setRestTemplate(RestTemplate restTemplate) {
