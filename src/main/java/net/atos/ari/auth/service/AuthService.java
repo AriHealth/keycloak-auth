@@ -23,9 +23,6 @@
 package net.atos.ari.auth.service;
 
 import org.apache.http.HttpStatus;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.AccessToken;
 
 import org.slf4j.Logger;
@@ -35,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -60,7 +56,7 @@ public class AuthService implements Service {
     private String keycloakClientId;
     
     @Value("${keycloak.client_secret}")
-    private String client_secret;
+    private String clientSecret;
         
 
     RestTemplate restTemplate = new RestTemplate();
@@ -73,7 +69,7 @@ public class AuthService implements Service {
             String data = "grant_type=password&username=" + user.getUsername() + 
                 "&password=" + user.getPassword() 
                 + "&client_id=" + keycloakClientId
-                + "&client_secret=" + client_secret;
+                + "&client_secret=" + clientSecret;
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/x-www-form-urlencoded");
@@ -101,7 +97,7 @@ public class AuthService implements Service {
     	String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token/introspect";
     	 
     	 String data = "&client_id=" + keycloakClientId
-                 + "&client_secret=" + client_secret
+                 + "&client_secret=" + clientSecret
                  + "&token_type_hint=access_token"
     	 		 + "&token="+authToken;
 		
@@ -122,9 +118,8 @@ public class AuthService implements Service {
              throw new NotAuthorizedException("Unauthorised access to protected resource");
          }
 
-		log.debug("Token info: {}", response.getBody().isActive());
+		log.debug("Token info: {}", response.getBody());
 		return response.getBody().isActive();
-		
 	}
 	
    
