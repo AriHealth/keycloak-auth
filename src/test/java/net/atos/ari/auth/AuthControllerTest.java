@@ -77,6 +77,7 @@ public class AuthControllerTest {
     }
 
     private KeycloakUser user;
+    private KeycloakUser userBad;
     private String authToken = "123456789";
     private ObjectWriter ow;
 
@@ -99,6 +100,12 @@ public class AuthControllerTest {
             .username("test")
             .password("test")
             .build();
+        
+        //This user does not exist the must not have access
+        userBad = KeycloakUser.builder()
+                .username("badtest")
+                .password("badtest")
+                .build();
 
         Mockito.when(authService.user(""))
             .thenReturn("OK");
@@ -137,5 +144,34 @@ public class AuthControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestAccessToken.getBytes()))
             .andExpect(status().isOk());
+    }
+    
+    /**
+     * Test login when no authorization bearer is provided.
+     * 
+     * @return void
+     * @throws Exception, when some error happens 
+     */
+    @Test
+    public void login_badcredentials_returnError() throws Exception {
+        String requestAccessToken = ow.writeValueAsString(userBad);
+        mockMvc.perform(MockMvcRequestBuilders.post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestAccessToken.getBytes()))
+            .andExpect(status().isOk());
+    }
+    
+    /**
+     * Test valid tken when authorization bearer is provided.
+     * 
+     * @return void
+     * @throws Exception, when some error happens 
+     */
+    @Test
+    public void isValid_returnOk() throws Exception {
+    	String requestAccessToken = ow.writeValueAsString(user);
+    	 mockMvc.perform(MockMvcRequestBuilders.post("/isvalid")
+    			 .content(requestAccessToken.getBytes()))
+    	         .andExpect(status().isOk());
     }
 }
