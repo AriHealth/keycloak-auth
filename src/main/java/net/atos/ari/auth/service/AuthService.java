@@ -23,9 +23,6 @@
 package net.atos.ari.auth.service;
 
 import org.apache.http.HttpStatus;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.representations.AccessToken;
 
 import org.slf4j.Logger;
@@ -35,7 +32,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -58,6 +54,10 @@ public class AuthService implements Service {
 
     @Value("${keycloak.client_id}")
     private String keycloakClientId;
+    
+    @Value("${keycloak.client_secret}")
+    private String clientSecret;
+        
 
     RestTemplate restTemplate = new RestTemplate();
     private static final String BEARER = "BEARER ";
@@ -65,9 +65,11 @@ public class AuthService implements Service {
     @Override
     public AccessTokenResponse login(KeycloakUser user) throws NotAuthorizedException {
         try {
-            String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token";
+            String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token/";
             String data = "grant_type=password&username=" + user.getUsername() + 
-                "&password=" + user.getPassword() + "&client_id=" + keycloakClientId;
+                "&password=" + user.getPassword() 
+                + "&client_id=" + keycloakClientId
+                + "&client_secret=" + clientSecret;
 
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/x-www-form-urlencoded");
@@ -89,6 +91,38 @@ public class AuthService implements Service {
         }
     }
 
+   
+    @Override
+	public Boolean isValid(String authToken) throws NotAuthorizedException {
+    	String uri = keycloakUrl + "/realms/" + keycloakRealm + "/protocol/openid-connect/token/introspect";
+    	 
+    	 String data = "&client_id=" + keycloakClientId
+                 + "&client_secret=" + clientSecret
+                 + "&token_type_hint=access_token"
+    	 		 + "&token="+authToken;
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+		 HttpEntity<String> entity = new HttpEntity<String>(data, headers);
+		 log.debug("Token info: {}", entity);
+		 
+          ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(uri, HttpMethod.POST, 
+        		  entity, AccessTokenResponse.class);
+        
+         
+         if (response.getStatusCode()
+             .value() != HttpStatus.SC_OK) {
+             log.error("Unauthorised access to protected resource", response.getStatusCode()
+                 .value());
+             throw new NotAuthorizedException("Unauthorised access to protected resource");
+         }
+
+      	 return response.getBody().isActive();
+	}
+	
+   
+    
     @Override
     public String user(String authToken) throws NotAuthorizedException {
 
@@ -114,10 +148,7 @@ public class AuthService implements Service {
                 "Invalid OAuth Token supplied in Authorization Header on Request.");
         }
 
-        log.debug("User info: {}", response.getBody()
-            .getPreferredUsername());
-        return response.getBody()
-            .getPreferredUsername();
+       	return response.getBody().getPreferredUsername();
     }
 
     public void setRestTemplate(RestTemplate restTemplate) {
