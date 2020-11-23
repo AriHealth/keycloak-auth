@@ -13,6 +13,7 @@ OAuth2 authentication to manage Keycloak tokens (it needs a Keycloak url, realm 
 
 - [POST] login
 - [GET] user
+- [POST] isvalid
 
 ## Technology
 
@@ -26,6 +27,7 @@ OAuth2 authentication to manage Keycloak tokens (it needs a Keycloak url, realm 
 
 - Login, get a token given user name and password
 - User, get the username given the token
+- isvalid, get the token valid value given the token
 
 ## How to deploy
 
