@@ -5,7 +5,7 @@ keycloak:
     url: ${KEYCLOAK_URL:http://localhost:8080/auth}
     realm: ${KEYCLOAK_REALM:test}
     client_id: ${KEYCLOAK_CLIENT_ID:test}
-    client_secret: ${KEYCLOAK_CLIENT_SECRET:copyfromkeycloacksecret}
+    client_secret: ${KEYCLOAK_SECRET:copyfromkeycloakinterfaz}
     
 spring:
     profiles:

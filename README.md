@@ -66,19 +66,20 @@ Use the application properties according to your Keycloak server configuration.
     KEYCLOAK_URL=
     KEYCLOAK_REALM=
     KEYCLOAK_CLIENT_ID=
+	KEYCLOAK_SECRET=
 
 ## Docker deployment
 
 The Keycloak parameters are configured using environment variables, that are referenced in the `application.yml` file. Assuming that realm="test", client_id="test" and url="localhost:9090":
 
 ```
-docker run --name auth -d -e KEYCLOAK_URL=http://localhost:9090/auth -e KEYCLOAK_REALM=test -e KEYCLOAK_CLIENT_ID=test health/auth
+docker run --name auth -d -e KEYCLOAK_URL=http://localhost:9090/auth -e KEYCLOAK_REALM=test -e KEYCLOAK_CLIENT_ID=test health/auth -e KEYCLOAK_SECRET=addvaluefromkeycloak
 ```
 
 Logging can be also configured using `LOGGING_FOLDER` and sharing a volume (this is useful for example for [ELK](https://www.elastic.co/elk-stack) processing). The level of the logging can be configured with `LOGGING_MODE` (dev|prod):
 
 ```
-docker run --name auth -d -v /home/docker/log/test:/log/test -e KEYCLOAK_URL=http://localhost:9090/auth -e KEYCLOAK_REALM=test -e KEYCLOAK_CLIENT_ID=test -e LOGGING_FOLDER=/log/test -e LOGGING_MODE=dev health/auth
+docker run --name auth -d -v /home/docker/log/test:/log/test -e KEYCLOAK_URL=http://localhost:9090/auth -e KEYCLOAK_REALM=test -e KEYCLOAK_CLIENT_ID=test -e LOGGING_FOLDER=/log/test -e LOGGING_MODE=dev health/auth -e KEYCLOAK_SECRET=addvaluefromkeycloak
 ```
 
 ## License
