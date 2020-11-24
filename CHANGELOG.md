@@ -3,6 +3,9 @@
 OAuth2 authentication to manage OAuth 2.0 tokens (it needs a IdM url, realm and client_id to work) to allow login based on user and password. 
 
 ## Next release
+### update keycloak secret  
+* Further information in the Pull Request [#35](https://github.com/AriHealth/keycloak-auth/pull/35)
+## 0.0.5
 ## introspection
 ### Add isValid functionality using introspection endPoint from keycloak  
 * Further information in the Pull Request [#33](https://github.com/AriHealth/keycloak-auth/pull/33)
