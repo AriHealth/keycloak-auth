@@ -50,7 +50,7 @@ import net.atos.ari.auth.service.Service;
 
 @RestController
 @EnableAutoConfiguration
-@CrossOrigin(origins = "https://portal.fair4health.eu/", methods= {RequestMethod.GET,RequestMethod.POST})
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
