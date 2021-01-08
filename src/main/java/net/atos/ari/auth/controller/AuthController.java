@@ -24,6 +24,10 @@
 package net.atos.ari.auth.controller;
 
 import org.slf4j.Logger;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +50,7 @@ import net.atos.ari.auth.service.Service;
 
 @RestController
 @EnableAutoConfiguration
+@CrossOrigin(origins = "https://portal.fair4health.eu/", methods= {RequestMethod.GET,RequestMethod.POST})
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
