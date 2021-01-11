@@ -58,14 +58,14 @@ public class AuthController {
     @Autowired
     Service authService;
 
-    @ApiOperation(value = "Give OAuth access token given user and password")
+    @ApiOperation(value = "Give OAuth access token given user and password.")
     @PostMapping("/login")
     public AccessTokenResponse login(@RequestBody KeycloakUser user) throws NotAuthorizedException {
         log.info("Login user");
         return authService.login(user);
     }
 
-    @ApiOperation(value = "Provide the user preferred name given the token")
+    @ApiOperation(value = "Provide the user preferred name given the token.")
     @GetMapping("/user")
     public String user(@ApiParam(value = "Bearer <token>") 
     	@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
@@ -74,7 +74,7 @@ public class AuthController {
     }
 
     
-    @ApiOperation(value = "Provide token info validation")
+    @ApiOperation(value = "Provide token info validation.")
     @PostMapping("/isvalid")
     public boolean isValid(String token) 
     		throws NotAuthorizedException {
