@@ -50,7 +50,7 @@ import net.atos.ari.auth.service.Service;
 
 @RestController
 @EnableAutoConfiguration
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
+@CrossOrigin(origins = "https://portal.fair4health.eu", methods= {RequestMethod.GET,RequestMethod.POST})
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -58,14 +58,14 @@ public class AuthController {
     @Autowired
     Service authService;
 
-    @ApiOperation(value = "Give OAuth access token given user and password.")
+    @ApiOperation(value = "Give OAuth access token given user and password..")
     @PostMapping("/login")
     public AccessTokenResponse login(@RequestBody KeycloakUser user) throws NotAuthorizedException {
         log.info("Login user");
         return authService.login(user);
     }
 
-    @ApiOperation(value = "Provide the user preferred name given the token.")
+    @ApiOperation(value = "Provide the user preferred name given the token..")
     @GetMapping("/user")
     public String user(@ApiParam(value = "Bearer <token>") 
     	@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws NotAuthorizedException {
